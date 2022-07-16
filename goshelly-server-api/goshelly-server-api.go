@@ -21,12 +21,13 @@ import (
 
 var r *gin.Engine
 var IP = getIP()
-var DOMAIN = "http://"+IP+":9000"
+var DOMAIN = "http://" + IP + ":9000"
+
 const SECRETKEY = `U2hyaSBHdXJ1IENoYXJhbiBTYXJvb2phLXJhak5pamEgbWFudSBNdWt1cmEgU3VkaGFhcmlCYXJhbmF1IFJhaHViaGFyYSBCaW1hbGEgWWFzaHVKbyBEYXlha2EgUGhhbGEgQ2hhcmlCdWRoZWUtSGVlbiBUaGFudSBKYW5uaWtheQpTdW1pcm93IFBhdmFuYSBLdW1hcmFCYWxhLUJ1ZGhlZSBWaWR5YSBEZWhvbyBNb2hlZUhhcmFodSBLYWxlc2hhIFZpa2FhcmEuLi5KYWkgSGFudW1hbiBneWFuIGd1biBzYWdhckphaSBLYXBpcyB0aWh1biBsb2sgdWphZ2FyUmFtIGRvb3QgYXR1bGl0IGJhbCBkaGFtYUFuamFhbmktcHV0cmEgUGF2YW4gc3V0IG5hbWEuLi4KTWFoYWJpciBCaWtyYW0gQmFqcmFuZwpLdW1hdGkgbml2YXIgc3VtYXRpIEtlIHNhbmdpCkthbmNoYW4gdmFyYW4gdmlyYWogc3ViZXNhCkthbmFuIEt1bmRhbCBLdW5jaGl0IEtlc2gKSGF0aCBWYWpyYSBBdXIgRGh1dmFqZSBWaXJhagpLYWFuZGhlIG1vb25qIGphbmVodSBzYWphaQpTYW5rYXIgc3V2YW4ga2VzcmkgTmFuZGFuClRlaiBwcmF0YWFwIG1haGEgamFnIHZhbmRhbi4uLgpWaWR5YXZhYW4gZ3VuaSBhdGkgY2hhdHVyClJhbSBrYWoga2FyaWJlIGtvIGFhdHVyClByYWJ1IGNoYXJpdHJhIHN1bmliZS1rbyByYXNpeWEKUmFtIExha2huIFNpdGEgbWFuIEJhc2l5YQpTdWtzaG1hIHJvb3AgZGhhcmkgU2l5YWhpIGRpa2hhdmEKVmlrYXQgcm9vcCBkaGFyaSBsYW5rIGphcmF2YQpCaGltYSByb29wIGRoYXJpIGFzdXIgc2FuZ2hhcmUKUmFtYWNoYW5kcmEga2Uga2FqIHNhbnZhcmUuLi4KTGF5ZSBTYW5qaXZhbiBMYWtoYW4gSml5YXllClNocmkgUmFnaHV2aXIgSGFyYXNoaSB1ciBsYXllClJhZ2h1cGF0aSBLaW5oaSBiYWh1dCBiYWRhaQpUdW0gbWFtIHByaXllIEJoYXJhdC1oaS1zYW0gYmhhaQpTYWhhcyBiYWRhbiB0dW1oYXJvIHlhc2ggZ2FhdmUKQXNhLWthaGkgU2hyaXBhdGkga2FudGggbGFnYWF2ZQpTYW5rYWRoaWsgQnJhaG1hYWRpIE11bmVlc2EKTmFyYWQtU2FyYWQgc2FoaXQgQWhlZXNhLi4uCllhbSBLdWJlciBEaWdwYWFsIEphaGFuIHRlCkthdiBrb3ZpZCBrYWhpIHNha2Uga2FoYW4gdGUKVHVtIHVwa2FyIFN1Z3JlZXZhaGluIGtlZW5oYQpSYW0gbWlsYXllIHJhanBhZCBkZWVuaGEKVHVtaGFybyBtYW50cmEgVmliaGVlc2hhbiBtYWFuYQpMYW5rZXNoYXIgQmhheWUgU3ViIGphZyBqYW5hCll1ZyBzYWhhc3RyYSBqb2phbiBwYXIgQmhhbnUKTGVlbHlvIHRhaGkgbWFkaHVyIHBoYWwgamFudS4uLgpQcmFiaHUgbXVkcmlrYSBtZWxpIG11a2ggbWFoZWUKCkphbGFkaGkgbGFuZ2hpIGdheWUgYWNocmFqIG5haGVlCgpEdXJnYWFtIGthaiBqYWdhdGgga2UgamV0ZQoKU3VnYW0gYW51Z3JhaGEgdHVtaHJlIHRldGUKClJhbSBkd2FhcmUgdHVtIHJha2h2YXJlCgpIb2F0IG5hIGFneWEgYmludSBwYWlzYXJlCgpTdWIgc3VraCBsYWhhZSB0dW1oYXJpIHNhciBuYQoKVHVtIHJha3NoYWsga2FodSBrbyBkYXIgbmFhLi4uCgpBYXBhbiB0ZWogc2FtaGFybyBhYXBhaQoKVGVlbmhvbiBsb2sgaGFuayB0ZSBrYW5wYWkKCkJob290IHBpc2FhY2ggTmlrYXQgbmFoaW4gYWF2YWkKCk1haGF2aXIgamFiIG5hYW0gc3VuYXZhZQoKTmFzZSByb2cgaGFyYWUgc2FiIHBlZXJhCgpKYXBhdCBuaXJhbnRhciBIYW51bWFudCBiZWVyYQoKU2Fua2F0IHNlIEhhbnVtYW4gY2h1ZGF2YWUKCk1hbiBLYXJhbSBWYWNoYW4gZHlhbiBqbyBsYXZhaS4uLgoKU2FiIHBhciBSYW0gdGFwYXN2ZWUgcmFqYQoKVGluIGtlIGthaiBzYWthbCBUdW0gc2FqYQoKQXVyIG1hbm9yYXRoIGpvIGtvaSBsYXZhaQoKU29oaSBhbWl0IGplZXZhbiBwaGFsIHBhdmFpCgpDaGFyb24gWXVnIHBhcnRhcCB0dW1oYXJhCgpIYWkgcGVyc2lkaCBqYWdhdCB1aml5YXJhCgpTYWRodSBTYW50IGtlIHR1bSBSYWtod2FyZQoKQXN1ciBuaWthbmRhbiBSYW0gZHVsaGFyZS4uLgoKQXNodGEtc2lkaGkgbmF2IG5pZGhpIGtlIGRoYXRhCgpBcy12YXIgZGVlbiBKYW5raSBtYXRhCgpSYW0gcmFzYXlhbiB0dW1oYXJlIHBhc2EKClNhZGEgcmFobyBSYWdodXBhdGkga2UgZGFzYQoKVHVtaGFyZSBiaGFqYW4gUmFtIGtvIHBhdmFpCgpKYW5hbS1qYW5hbSBrZSBkdWtoIGJpc3JhYXZhaQoKQW50aC1rYWFsIFJhZ2h1dmlyIHB1ciBqYXllZQoKSmFoYW4gamFuYW0gSGFyaS1CYWtodCBLYWhheWVlLi4uCgpBdXIgRGV2dGEgQ2hpdCBuYSBkaGFyZWhpCgpIYW51bWFudGggc2UgaGkgc2FydmUgc3VraCBrYXJlaGkKClNhbmthdCBrYXRlLW1pdGUgc2FiIHBlZXJhCgpKbyBzdW1pcmFpIEhhbnVtYXQgQmFsYmVlcmEKCkphaSBKYWkgSmFpIEhhbnVtYW4gR29zYWhpbgoKS3JpcGEgS2FyYWh1IEd1cnVkZXYga2kgbnlhaGluCgpKbyBzYXQgYmFyIHBhdGgga2FyZSBrb3lpCgpDaHV0ZWhpIGJhbmRoaSBtYWhhIHN1a2ggaG95aS4uLgoKSm8geWFoIHBhZGhlIEhhbnVtYW4gQ2hhbGlzYQoKSG95ZSBzaWRkaGkgc2FraGkgR2F1cmVlc2EKClR1bHNpZGFzIHNhZGEgaGFyaSBjaGVyYQoKS2VlamFpIE5hdGggSHJpZGF5ZSBtZWluIGRlcmEuLi4KCktlZWphaSBOYXRoIEhyaWRheWUgbWVpbiBkZXJhLi4uCgpQYXZhbiBUYW5heSBTYW5rYXQgSGFyYW5hLApNYW5nYWxhIE11cmF0aSBSb29wLi4uClJhbSBMYWtoYW5hIFNpdGEgU2FoaXRhCkhyaWRheSBCYXNhaHUgU29vciBCaG9vcC4=` //change this
 
-
-func getIP() string{
-	return ""
+func getIP() string {
+	//this is hardcoded, need to find a way to automate this
+	return "20.116.192.195"
 } //fix
 func initServerApi() {
 	r = gin.Default()
@@ -236,17 +237,39 @@ func createLink() {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Permission denied. Please log in again."})
 			return
 		}
-		link := DOMAIN + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/"
+
+		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+			Issuer:    "GoShelly Admin",
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
+			Audience:  c.ClientIP() + "$" + c.RemoteIP(),
+		})
+		token, err := claims.SignedString([]byte(SECRETKEY))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Service unavailable. Could not get log.",
+			})
+			return
+		}
+		link := DOMAIN + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/" + token + "/"
 		c.JSON(http.StatusOK, gin.H{"message": link})
 	})
 }
-
+func checkLogAccessToken(token string) bool {
+	return true
+}
 func hostLog() {
 
-	r.GET("/logs/:userid/:id", func(c *gin.Context) {
+	r.GET("/logs/:userid/:id/:authTok/", func(c *gin.Context) {
 		userid := c.Param("userid")
 		id, err := strconv.Atoi(c.Param("id"))
-
+		token := c.Param("authTok")
+		if !checkLogAccessToken(token) {
+			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
+				"message": "Un-authorised.",
+			})
+			return
+		}
 		if err != nil || userid == "" || id < 1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
 			c.HTML(http.StatusNotFound, "404.html", gin.H{
 				"message": "Not found.",
