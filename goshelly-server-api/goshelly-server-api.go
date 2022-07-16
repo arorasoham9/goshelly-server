@@ -31,6 +31,7 @@ func getIP() string {
 } //fix
 func initServerApi() {
 	r = gin.Default()
+
 	r.LoadHTMLGlob("html/*.html")
 	os.MkdirAll("./clients/", os.ModePerm)
 	os.MkdirAll("./logs/GoShellyServer-api-logs/", os.ModePerm)
@@ -255,7 +256,15 @@ func createLink() {
 		c.JSON(http.StatusOK, gin.H{"message": link})
 	})
 }
-func checkLogAccessToken(token string) bool {
+func checkLogAccessToken(token string, c *gin.Context) bool {
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(SECRETKEY), nil
+	})
+	if err != nil || !claims.VerifyAudience(c.ClientIP()+"$"+c.RemoteIP(), true) ||
+		!claims.VerifyIssuer("GoShelly Admin", true) || !claims.VerifyExpiresAt(time.Now().Unix(), true) {
+		return false
+	}
 	return true
 }
 func hostLog() {
@@ -264,7 +273,7 @@ func hostLog() {
 		userid := c.Param("userid")
 		id, err := strconv.Atoi(c.Param("id"))
 		token := c.Param("authTok")
-		if !checkLogAccessToken(token) {
+		if !checkLogAccessToken(token, c) {
 			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
 				"message": "Un-authorised.",
 			})
@@ -276,6 +285,7 @@ func hostLog() {
 			})
 			return
 		}
+
 		files, err := ioutil.ReadDir("./clients/" + userid + "/logs/")
 		if err != nil {
 			c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
