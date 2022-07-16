@@ -243,7 +243,7 @@ func createLink() {
 			Issuer:    "GoShelly Admin",
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-			Audience:  c.ClientIP() + "$" + c.RemoteIP(),
+			Audience:  "1",//c.ClientIP() + "$" + c.RemoteIP(),
 		})
 		token, err := claims.SignedString([]byte(SECRETKEY))
 		if err != nil {
@@ -261,10 +261,13 @@ func checkLogAccessToken(token string, c *gin.Context) bool {
 	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SECRETKEY), nil
 	})
-	if err != nil || !claims.VerifyAudience(c.ClientIP()+"$"+c.RemoteIP(), true) ||
+	// id := c.ClientIP()+"$"+c.RemoteIP()
+	id :="1"
+	if err != nil || !claims.VerifyAudience(id, true) ||
 		!claims.VerifyIssuer("GoShelly Admin", true) || !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return false
 	}
+	fmt.Println(c.ClientIP() + "$" + c.RemoteIP())
 	return true
 }
 func hostLog() {
