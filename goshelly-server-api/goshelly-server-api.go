@@ -267,7 +267,7 @@ func checkLogAccessToken(token string, c *gin.Context) bool {
 		!claims.VerifyIssuer("GoShelly Admin", true) || !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return false
 	}
-	fmt.Println(c.ClientIP() + "$" + c.RemoteIP())
+	// fmt.Println(c.ClientIP() + "$" + c.RemoteIP())
 	return true
 }
 func hostLog() {

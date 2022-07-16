@@ -18,6 +18,7 @@ spec:
       containers:
       - name: container-goshelly
         image: arorasoham9/goshelly-server:linux
+        imagePullPolicy: Always
         volumeMounts:
         - name: goshelly-configmap-volume
           mountPath: "/etc/goshelly-configmap-volume"
