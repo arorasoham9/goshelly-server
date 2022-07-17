@@ -7,6 +7,7 @@ import (
 	b "goshelly-server/basic"
 	t "goshelly-server/template"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"net/mail"
 	"os"
@@ -140,7 +141,7 @@ func loginUser() {
 		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 			Issuer:    "GoShelly Admin",
 			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * time.Duration(math.Inf(4))).Unix(),
 			Audience:  user.EMAIL,
 		})
 		token, err := claims.SignedString([]byte(SECRETKEY))
