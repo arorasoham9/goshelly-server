@@ -51,12 +51,14 @@ var demoCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(demoCmd)
+	hook := "aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVEM4RlYxVjhSL0IwM003Uko2WEZZLzdQRmZBbkthRk8xaUN6WXJuOHdTVTV5WQ=="
 	demoCmd.PersistentFlags().String("PORT", "443", "PORT to listen for incoming connections.")
 	demoCmd.PersistentFlags().String("SSLEMAIL", "goshellydemo@araalinetworks.com", "Email address to generate SSL certificate.")
 	demoCmd.PersistentFlags().String("NOTEMAIL", "all@araalinetworks.com", "Email to be notified after a client is connected.")
-	demoCmd.PersistentFlags().String("SLACKHOOK", "", "SLACK HOOK")
+	demoCmd.PersistentFlags().String("SLACKHOOK", hook, "SLACK HOOK")
 	demoCmd.PersistentFlags().Bool("SLACKEN", false, "Enable/Disable slack notifications")
 	demoCmd.PersistentFlags().Bool("EMAILEN", false, "Enable/Disable email notifications")
 	demoCmd.PersistentFlags().Int("SERVLOGMAX", 50, "Max number of log files to save for server in memory.")
 	demoCmd.PersistentFlags().Int("CLILOGMAX", 5, "Max number of log files to save each client in memory.")
+	demoCmd.PersistentFlags().String("APIHOSTPORT", "9000", "API run port")
 }
