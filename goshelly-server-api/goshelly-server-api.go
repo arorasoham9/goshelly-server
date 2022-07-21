@@ -342,6 +342,6 @@ func startAPI() {
 func BeginAPI(APIHOSTPORT string) {
 	startAPI()
 	PORT = APIHOSTPORT
-	// r.RunTLS(":" + APIHOSTPORT,"certs/server.pem", "certs/server.key")
-	r.Run(":" + APIHOSTPORT)
+	 r.RunTLS(":" + APIHOSTPORT,"./certs/server.pem", "./certs/server.key")
+	// r.Run(":" + APIHOSTPORT)
 }
