@@ -49,7 +49,7 @@ func initServerApi() {
 func test() {
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "pong"+c.RemoteAddr(),
+			"message": "pong",
 		})
 	})
 }
@@ -242,7 +242,7 @@ func createLink() {
 			Issuer:    "GoShelly Admin",
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-			Audience: ,
+			Audience: "1",
 		})
 		token, err := claims.SignedString([]byte(SECRETKEY))
 		if err != nil {
