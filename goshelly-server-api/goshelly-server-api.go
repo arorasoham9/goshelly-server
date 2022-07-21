@@ -18,9 +18,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/gin-gonic/autotls"
+	// "github.com/gin-gonic/autotls"
 
-	"golang.org/x/crypto/acme/autocert"
+	// "golang.org/x/crypto/acme/autocert"
 )
 
 var r *gin.Engine
