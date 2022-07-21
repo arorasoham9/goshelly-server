@@ -18,6 +18,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/gin-gonic/autotls"
+
+	"golang.org/x/crypto/acme/autocert"
 )
 
 var r *gin.Engine
@@ -339,5 +342,6 @@ func startAPI() {
 func BeginAPI(APIHOSTPORT string) {
 	startAPI()
 	PORT = APIHOSTPORT
-	r.Run(":" + APIHOSTPORT)
+	r.RunTLS(":" + APIHOSTPORT,"certs/server.pem", "certs/server.key")
+	// r.Run(":" + APIHOSTPORT)
 }
