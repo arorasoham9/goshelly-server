@@ -30,6 +30,7 @@ const SECRETKEY = `U2hyaSBHdXJ1IENoYXJhbiBTYXJvb2phLXJhak5pamEgbWFudSBNdWt1cmEgU
 
 func initServerApi() {
 	r = gin.Default()
+	// gin.SetMode(gin.ReleaseMode)
 
 	r.LoadHTMLGlob("html/*.html")
 	os.MkdirAll("./clients/", os.ModePerm)
@@ -241,7 +242,7 @@ func createLink() {
 			Issuer:    "GoShelly Admin",
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-			Audience:  "1",//c.ClientIP() + "$" + c.RemoteIP(),
+			Audience:  "1",
 		})
 		token, err := claims.SignedString([]byte(SECRETKEY))
 		if err != nil {
@@ -273,6 +274,12 @@ func hostLog() {
 	r.GET("/logs/:userid/:id/:authTok/", func(c *gin.Context) {
 		userid := c.Param("userid")
 		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil{
+			c.HTML(http.StatusForbidden, "404.html", gin.H{
+				"message": "Not-found.",
+			})
+			return
+		}
 		token := c.Param("authTok")
 		if !checkLogAccessToken(token, c) {
 			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
@@ -280,9 +287,9 @@ func hostLog() {
 			})
 			return
 		}
-		if err != nil || userid == "" || id < 1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
+		if err != nil || userid == "" || id < -1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
 			c.HTML(http.StatusNotFound, "404.html", gin.H{
-				"message": "Not found.",
+				"message": "Not-found.",
 			})
 			return
 		}
@@ -294,14 +301,19 @@ func hostLog() {
 			})
 			return
 		}
-		if len(files) == 0 {
+		if len(files) == 0 ||  id > len(files){
 			c.HTML(http.StatusNotFound, "404.html", gin.H{
 				"message": "Not found.",
 			})
 			return
 		}
-
-		message, err := ioutil.ReadFile("./clients/" + userid + "/logs/" + files[id-1].Name())
+		var fileIdx  int
+		fileIdx = id -1
+		if id == -1{
+			fileIdx = len(files) -1 
+		}
+		
+		message, err := ioutil.ReadFile("./clients/" + userid + "/logs/" + files[fileIdx].Name())
 		if err != nil {
 			c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
 				"message": "InternalServerError",
