@@ -202,9 +202,10 @@ func LogClean(dir string, MAXLOGSTORE int) {
 }
 
 func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
-	buffer := make([]byte, 1024)
+	
 	var data []t.SlackSchemaOne
 	for _, element := range SERVCONFIG.CMDSTORUN {
+		buffer := make([]byte, 1024)
 		element = strings.TrimSpace(element)
 		encodedStr := base64.StdEncoding.EncodeToString([]byte(element))
 		logger.Println("REMOTELY EXECUTING: " + element)
@@ -230,6 +231,7 @@ func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
 			Text: "RES: " + string(decodedStr[:]),
 		},
 		}})
+		buffer = nil
 	}
 	return data
 }
