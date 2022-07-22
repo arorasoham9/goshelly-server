@@ -151,8 +151,8 @@ func handleClient(conn net.Conn, id string) {
 	defer file.Close()
 	logger := log.New(file, "", log.LstdFlags)
 	// logger.Println("FILE BEGINS HERE.")
-	logger.Println("Client Email: ", id)
-	logger.Println("Client IP: ", conn.RemoteAddr().String())
+	logger.Println("GoShelly Results.\nClient Email: ", id)
+	logger.Println("Client IP: ", strings.Split(conn.RemoteAddr().String(), ":")[0])
 	data := runAttackSequence(conn, logger)
 	disconnectClient(conn, logger, *file)
 	//err = n.SendEmail(conn, SERVCONFIG.EMAILEN, SERVCONFIG.NOTEMAIL, servlog)
@@ -237,7 +237,7 @@ func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
 }
 
 func disconnectClient(conn net.Conn, logger *log.Logger, file os.File) {
-	logger.Println("Disconnecting Client: ", strings.Split(conn.RemoteAddr().String(), ":")[0])
+	logger.Println("\nDisconnecting Client: ", strings.Split(conn.RemoteAddr().String(), ":")[0])
 	// logger.Println("\nDONE.\nFILE ENDS HERE.")
 	file.Close()
 	conn.Close()
