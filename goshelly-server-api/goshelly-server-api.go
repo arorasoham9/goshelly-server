@@ -226,33 +226,33 @@ func returnUserLogs() {
 
 func createLink() {
 	r.POST("/link/", func(c *gin.Context) {
-		var user t.UserLinks
-		c.BindJSON(&user)
-		if !b.FindUser(user.EMAIL) {
-			c.JSON(http.StatusNotFound, gin.H{"message": "Incorrect credentials or user does not exist."})
-			return
-		}
-		if !authToken(t.LoggedUser{
-			TOKEN: user.TOKEN,
-			EMAIL: user.EMAIL,
-		}) {
-			c.JSON(http.StatusBadRequest, gin.H{"message": "Permission denied. Please log in again."})
-			return
-		}
+		// var user t.UserLinks
+		// c.BindJSON(&user)
+		// if !b.FindUser(user.EMAIL) {
+		// 	c.JSON(http.StatusNotFound, gin.H{"message": "Incorrect credentials or user does not exist."})
+		// 	return
+		// }
+		// if !authToken(t.LoggedUser{
+		// 	TOKEN: user.TOKEN,
+		// 	EMAIL: user.EMAIL,
+		// }) {
+		// 	c.JSON(http.StatusBadRequest, gin.H{"message": "Permission denied. Please log in again."})
+		// 	return
+		// }
 		
-		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-			Issuer:    "GoShelly Admin",
-			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-			Audience: user.EMAIL+"$"+string(user.LOGID),
-		})
-		token, err := claims.SignedString([]byte(SECRETKEY))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Service unavailable. Could not get log.",
-			})
-			return
-		}
+		// claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		// 	Issuer:    "GoShelly Admin",
+		// 	IssuedAt:  time.Now().Unix(),
+		// 	ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
+		// 	Audience: user.EMAIL+"$"+string(user.LOGID),
+		// })
+		// token, err := claims.SignedString([]byte(SECRETKEY))
+		// if err != nil {
+		// 	c.JSON(http.StatusInternalServerError, gin.H{
+		// 		"message": "Service unavailable. Could not get log.",
+		// 	})
+		// 	return
+		// }
 		// link := ":"+PORT + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/" + token + "/"
 		// c.JSON(http.StatusOK, gin.H{"message": link})
 		c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
