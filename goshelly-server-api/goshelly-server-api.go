@@ -239,12 +239,12 @@ func createLink() {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Permission denied. Please log in again."})
 			return
 		}
-
+		
 		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 			Issuer:    "GoShelly Admin",
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-			Audience: "1",
+			Audience: user.EMAIL+"$"+user.LOGID,
 		})
 		token, err := claims.SignedString([]byte(SECRETKEY))
 		if err != nil {
@@ -258,13 +258,13 @@ func createLink() {
 	})
 }
 
-func checkLogAccessToken(token string, c *gin.Context) bool {
+func checkLogAccessToken(token string, userid string, id string, c *gin.Context) bool {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SECRETKEY), nil
 	})
-	id :="1"
-	if err != nil || !claims.VerifyAudience(id, true) ||
+	
+	if err != nil || !claims.VerifyAudience(userid+"$"+id, true) ||
 		!claims.VerifyIssuer("GoShelly Admin", true) || !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return false
 	}
@@ -283,7 +283,7 @@ func hostLog() {
 			return
 		}
 		token := c.Param("authTok")
-		if !checkLogAccessToken(token, c) {
+		if !checkLogAccessToken(token, userid, id, c) {
 			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
 				"message": "Un-authorised.",
 			})
