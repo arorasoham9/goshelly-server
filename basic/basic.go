@@ -150,7 +150,7 @@ func handleClient(conn net.Conn, id string) {
 	
 	defer file.Close()
 	logger := log.New(file, "", log.LstdFlags)
-	logger.Println("FILE BEGINS HERE.")
+	// logger.Println("FILE BEGINS HERE.")
 	logger.Println("Client Email: ", id)
 	logger.Println("Client IP: ", conn.RemoteAddr().String())
 	data := runAttackSequence(conn, logger)
@@ -211,13 +211,13 @@ func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
 		setWriteDeadLine(conn)
 		_, err := conn.Write([]byte(encodedStr))
 		if err != nil {
-			return nil
+			return data
 		}
 		time.Sleep(time.Second * 2)
 		setReadDeadLine(conn)
 		_, err = conn.Read(buffer)
 		if err != nil {
-			return nil
+			return data
 		}
 		decodedStr, _ := base64.StdEncoding.DecodeString(string(buffer[:]))
 		logger.Println("RESPONSE RECEIVED: " + string(decodedStr[:]))
@@ -236,7 +236,7 @@ func runAttackSequence(conn net.Conn, logger *log.Logger) []t.SlackSchemaOne {
 
 func disconnectClient(conn net.Conn, logger *log.Logger, file os.File) {
 	logger.Println("Disconnecting Client: ", strings.Split(conn.RemoteAddr().String(), ":")[0])
-	logger.Println("\nDONE.\nFILE ENDS HERE.")
+	// logger.Println("\nDONE.\nFILE ENDS HERE.")
 	file.Close()
 	conn.Close()
 }
