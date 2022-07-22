@@ -244,7 +244,7 @@ func createLink() {
 			Issuer:    "GoShelly Admin",
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-			Audience: user.EMAIL+"$"+user.LOGID,
+			Audience: user.EMAIL+"$"+string(user.LOGID),
 		})
 		token, err := claims.SignedString([]byte(SECRETKEY))
 		if err != nil {
