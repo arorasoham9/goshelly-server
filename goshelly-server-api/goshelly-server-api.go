@@ -283,7 +283,7 @@ func hostLog() {
 			return
 		}
 		token := c.Param("authTok")
-		if !checkLogAccessToken(token, userid, id, c) {
+		if !checkLogAccessToken(token, userid, string(id), c) {
 			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
 				"message": "Un-authorised.",
 			})
