@@ -253,7 +253,7 @@ func createLink() {
 			})
 			return
 		}
-		link := ":"+PORT + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/" + token + "/"
+		// link := ":"+PORT + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/" + token + "/"
 		// c.JSON(http.StatusOK, gin.H{"message": link})
 		c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
 	})
