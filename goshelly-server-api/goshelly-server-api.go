@@ -32,7 +32,7 @@ const SECRETKEY = `U2hyaSBHdXJ1IENoYXJhbiBTYXJvb2phLXJhak5pamEgbWFudSBNdWt1cmEgU
 
 func initServerApi() {
 	r = gin.Default()
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	r.LoadHTMLGlob("html/*.html")
 	os.MkdirAll("./clients/", os.ModePerm)
@@ -275,7 +275,6 @@ func checkLogAccessToken(token string, userid string, id string, c *gin.Context)
 func hostLog() {
 
 	r.GET("/logs/:userid/:id/:authTok/", func(c *gin.Context) {
-		// c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
 		userid := c.Param("userid")
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil{
