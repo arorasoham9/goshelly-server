@@ -1,5 +1,5 @@
-apiVersion: apps/v1 
-kind: Deployment 
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: goshelly-deployment
   namespace: default
@@ -16,23 +16,23 @@ spec:
         app: goshelly
     spec:
       containers:
-      - name: container-goshelly
-        image: arorasoham9/goshelly-server:linux
-        imagePullPolicy: Always
-        volumeMounts:
-        - name: goshelly-configmap-volume
-          mountPath: "/etc/goshelly-configmap-volume"
-          readOnly: true
-        - name: goshelly-secret-volume
-          mountPath: "/etc/goshelly-secret-volume"
-          readOnly: true
-        resources:
-          limits:
-            memory: 512Mi
-            cpu: "2"
-          requests:
-            memory: 256Mi
-            cpu: "1"
+        - name: container-goshelly
+          image: arorasoham9/goshelly-server:linux
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: goshelly-configmap-volume
+              mountPath: "/etc/goshelly-configmap-volume"
+              readOnly: true
+            - name: goshelly-secret-volume
+              mountPath: "/etc/goshelly-secret-volume"
+              readOnly: true
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "500m"
+            requests:
+              memory: 256Mi
+              cpu: "250m"
       volumes:
         - name: goshelly-configmap-volume
           configMap:
