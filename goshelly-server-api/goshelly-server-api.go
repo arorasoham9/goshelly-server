@@ -226,36 +226,36 @@ func returnUserLogs() {
 
 func createLink() {
 	r.POST("/link/", func(c *gin.Context) {
-		// var user t.UserLinks
-		// c.BindJSON(&user)
-		// if !b.FindUser(user.EMAIL) {
-		// 	c.JSON(http.StatusNotFound, gin.H{"message": "Incorrect credentials or user does not exist."})
-		// 	return
-		// }
-		// if !authToken(t.LoggedUser{
-		// 	TOKEN: user.TOKEN,
-		// 	EMAIL: user.EMAIL,
-		// }) {
-		// 	c.JSON(http.StatusBadRequest, gin.H{"message": "Permission denied. Please log in again."})
-		// 	return
-		// }
+		var user t.UserLinks
+		c.BindJSON(&user)
+		if !b.FindUser(user.EMAIL) {
+			c.JSON(http.StatusNotFound, gin.H{"message": "Incorrect credentials or user does not exist."})
+			return
+		}
+		if !authToken(t.LoggedUser{
+			TOKEN: user.TOKEN,
+			EMAIL: user.EMAIL,
+		}) {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Permission denied. Please log in again."})
+			return
+		}
 		
-		// claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		// 	Issuer:    "GoShelly Admin",
-		// 	IssuedAt:  time.Now().Unix(),
-		// 	ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
-		// 	Audience: user.EMAIL+"$"+string(user.LOGID),
-		// })
-		// token, err := claims.SignedString([]byte(SECRETKEY))
-		// if err != nil {
-		// 	c.JSON(http.StatusInternalServerError, gin.H{
-		// 		"message": "Service unavailable. Could not get log.",
-		// 	})
-		// 	return
-		// }
-		// link := ":"+PORT + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/" + token + "/"
-		// c.JSON(http.StatusOK, gin.H{"message": link})
-		c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
+		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+			Issuer:    "GoShelly Admin",
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
+			Audience: user.EMAIL+"$"+string(user.LOGID)+"$"+c.RemoteIP()+ "$"+c.ClientIP(),
+		})
+		token, err := claims.SignedString([]byte(SECRETKEY))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Service unavailable. Could not get log.",
+			})
+			return
+		}
+		link := ":"+PORT + "/logs/" + user.EMAIL + "/" + strconv.Itoa(user.LOGID) + "/" + token + "/"
+		c.JSON(http.StatusOK, gin.H{"message": link})
+		// c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
 	})
 }
 
@@ -265,7 +265,7 @@ func checkLogAccessToken(token string, userid string, id string, c *gin.Context)
 		return []byte(SECRETKEY), nil
 	})
 	
-	if err != nil || !claims.VerifyAudience(userid+"$"+id, true) ||
+	if err != nil || !claims.VerifyAudience(userid+"$"+id+"$"+c.RemoteIP()+ "$"+c.ClientIP(), true) ||
 		!claims.VerifyIssuer("GoShelly Admin", true) || !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return false
 	}
@@ -275,56 +275,56 @@ func checkLogAccessToken(token string, userid string, id string, c *gin.Context)
 func hostLog() {
 
 	r.GET("/logs/:userid/:id/:authTok/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
-		// userid := c.Param("userid")
-		// id, err := strconv.Atoi(c.Param("id"))
-		// if err != nil{
-		// 	c.HTML(http.StatusForbidden, "404.html", gin.H{
-		// 		"message": "Not-found.",
-		// 	})
-		// 	return
-		// }
-		// token := c.Param("authTok")
-		// if !checkLogAccessToken(token, userid, string(id), c) {
-		// 	c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
-		// 		"message": "Un-authorised.",
-		// 	})
-		// 	return
-		// }
-		// if err != nil || userid == "" || id < -1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
-		// 	c.HTML(http.StatusNotFound, "404.html", gin.H{
-		// 		"message": "Not-found.",
-		// 	})
-		// 	return
-		// }
+		// c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
+		userid := c.Param("userid")
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil{
+			c.HTML(http.StatusForbidden, "404.html", gin.H{
+				"message": "Not-found.",
+			})
+			return
+		}
+		token := c.Param("authTok")
+		if !checkLogAccessToken(token, userid, string(id), c) {
+			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
+				"message": "Un-authorised.",
+			})
+			return
+		}
+		if err != nil || userid == "" || id < -1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
+			c.HTML(http.StatusNotFound, "404.html", gin.H{
+				"message": "Not-found.",
+			})
+			return
+		}
 
-		// files, err := ioutil.ReadDir("./clients/" + userid + "/logs/")
-		// if err != nil {
-		// 	c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
-		// 		"message": "InternalServerError",
-		// 	})
-		// 	return
-		// }
-		// if len(files) == 0 ||  id > len(files){
-		// 	c.HTML(http.StatusNotFound, "404.html", gin.H{
-		// 		"message": "Not found.",
-		// 	})
-		// 	return
-		// }
-		// var fileIdx  int
-		// fileIdx = id -1
-		// if id == -1{
-		// 	fileIdx = len(files) -1 
-		// }
+		files, err := ioutil.ReadDir("./clients/" + userid + "/logs/")
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
+				"message": "InternalServerError",
+			})
+			return
+		}
+		if len(files) == 0 ||  id > len(files){
+			c.HTML(http.StatusNotFound, "404.html", gin.H{
+				"message": "Not found.",
+			})
+			return
+		}
+		var fileIdx  int
+		fileIdx = id -1
+		if id == -1{
+			fileIdx = len(files) -1 
+		}
 		
-		// message, err := ioutil.ReadFile("./clients/" + userid + "/logs/" + files[fileIdx].Name())
-		// if err != nil {
-		// 	c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
-		// 		"message": "InternalServerError",
-		// 	})
-		// }
+		message, err := ioutil.ReadFile("./clients/" + userid + "/logs/" + files[fileIdx].Name())
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
+				"message": "InternalServerError",
+			})
+		}
 
-		// c.String(http.StatusOK, string(message))
+		c.String(http.StatusOK, string(message))
 	})
 }
 
