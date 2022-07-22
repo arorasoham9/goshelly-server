@@ -275,55 +275,56 @@ func checkLogAccessToken(token string, userid string, id string, c *gin.Context)
 func hostLog() {
 
 	r.GET("/logs/:userid/:id/:authTok/", func(c *gin.Context) {
-		userid := c.Param("userid")
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil{
-			c.HTML(http.StatusForbidden, "404.html", gin.H{
-				"message": "Not-found.",
-			})
-			return
-		}
-		token := c.Param("authTok")
-		if !checkLogAccessToken(token, userid, string(id), c) {
-			c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
-				"message": "Un-authorised.",
-			})
-			return
-		}
-		if err != nil || userid == "" || id < -1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
-			c.HTML(http.StatusNotFound, "404.html", gin.H{
-				"message": "Not-found.",
-			})
-			return
-		}
+		c.JSON(http.StatusOK, gin.H{"message": c.RemoteIP()+ c.ClientIP()})
+		// userid := c.Param("userid")
+		// id, err := strconv.Atoi(c.Param("id"))
+		// if err != nil{
+		// 	c.HTML(http.StatusForbidden, "404.html", gin.H{
+		// 		"message": "Not-found.",
+		// 	})
+		// 	return
+		// }
+		// token := c.Param("authTok")
+		// if !checkLogAccessToken(token, userid, string(id), c) {
+		// 	c.HTML(http.StatusForbidden, "unauthorised.html", gin.H{
+		// 		"message": "Un-authorised.",
+		// 	})
+		// 	return
+		// }
+		// if err != nil || userid == "" || id < -1 || id > b.SERVCONFIG.CLIMAXLOGSTORE {
+		// 	c.HTML(http.StatusNotFound, "404.html", gin.H{
+		// 		"message": "Not-found.",
+		// 	})
+		// 	return
+		// }
 
-		files, err := ioutil.ReadDir("./clients/" + userid + "/logs/")
-		if err != nil {
-			c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
-				"message": "InternalServerError",
-			})
-			return
-		}
-		if len(files) == 0 ||  id > len(files){
-			c.HTML(http.StatusNotFound, "404.html", gin.H{
-				"message": "Not found.",
-			})
-			return
-		}
-		var fileIdx  int
-		fileIdx = id -1
-		if id == -1{
-			fileIdx = len(files) -1 
-		}
+		// files, err := ioutil.ReadDir("./clients/" + userid + "/logs/")
+		// if err != nil {
+		// 	c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
+		// 		"message": "InternalServerError",
+		// 	})
+		// 	return
+		// }
+		// if len(files) == 0 ||  id > len(files){
+		// 	c.HTML(http.StatusNotFound, "404.html", gin.H{
+		// 		"message": "Not found.",
+		// 	})
+		// 	return
+		// }
+		// var fileIdx  int
+		// fileIdx = id -1
+		// if id == -1{
+		// 	fileIdx = len(files) -1 
+		// }
 		
-		message, err := ioutil.ReadFile("./clients/" + userid + "/logs/" + files[fileIdx].Name())
-		if err != nil {
-			c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
-				"message": "InternalServerError",
-			})
-		}
+		// message, err := ioutil.ReadFile("./clients/" + userid + "/logs/" + files[fileIdx].Name())
+		// if err != nil {
+		// 	c.HTML(http.StatusInternalServerError, "oops.html", gin.H{
+		// 		"message": "InternalServerError",
+		// 	})
+		// }
 
-		c.String(http.StatusOK, string(message))
+		// c.String(http.StatusOK, string(message))
 	})
 }
 
