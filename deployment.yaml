@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: goshelly-deployment
-  namespace: default
+  namespace: goshelly-server
   labels:
     app: goshelly
 spec:
