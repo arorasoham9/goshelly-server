@@ -26,13 +26,13 @@ spec:
         - name: container-goshelly
           image: arorasoham9/goshelly-server:linux
           imagePullPolicy: Always
-          volumeMounts:
-            - name: goshelly-configmap-volume
-              mountPath: "/etc/goshelly-configmap-volume"
-              readOnly: true
-            - name: goshelly-secret-volume
-              mountPath: "/etc/goshelly-secret-volume"
-              readOnly: true
+          # volumeMounts:
+          #   - name: goshelly-configmap-volume
+          #     mountPath: "/etc/goshelly-configmap-volume"
+          #     readOnly: true
+          #   - name: goshelly-secret-volume
+          #     mountPath: "/etc/goshelly-secret-volume"
+          #     readOnly: true
           # resources:
           #   limits:
           #     memory: 512Mi
