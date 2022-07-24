@@ -33,13 +33,13 @@ spec:
             - name: goshelly-secret-volume
               mountPath: "/etc/goshelly-secret-volume"
               readOnly: true
-          resources:
-            limits:
-              memory: 512Mi
-              cpu: "500m"
-            requests:
-              memory: 256Mi
-              cpu: "250m"
+          # resources:
+          #   limits:
+          #     memory: 512Mi
+          #     cpu: "500m"
+          #   requests:
+          #     memory: 256Mi
+          #     cpu: "250m"
       volumes:
         - name: goshelly-configmap-volume
           configMap:
