@@ -54,6 +54,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: goshelly-port-forwarding
+  namespace: goshelly-server
 spec:
   # Make the service externally visible via the node
   type: LoadBalancer
