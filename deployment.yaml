@@ -9,7 +9,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: goshelly-deployment
-  namespace: goshelly-server
+  namespace: default #goshelly-server
   labels:
     app: goshelly
 spec:
@@ -54,7 +54,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: goshelly-port-forwarding
-  namespace: goshelly-server
+  namespace: default #goshelly-server
 spec:
   # Make the service externally visible via the node
   type: LoadBalancer
