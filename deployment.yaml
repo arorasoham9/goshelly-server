@@ -40,15 +40,15 @@ spec:
           #   requests:
           #     memory: 256Mi
           #     cpu: "250m"
-      volumes:
-        - name: goshelly-configmap-volume
-          configMap:
-            name: goshelly-configmap
-            optional: false
-        - name: goshelly-secret-volume
-          secret:
-            secretName: goshelly-slack-hook
-            optional: false
+      # volumes:
+      #   - name: goshelly-configmap-volume
+      #     configMap:
+      #       name: goshelly-configmap
+      #       optional: false
+      #   - name: goshelly-secret-volume
+      #     secret:
+      #       secretName: goshelly-slack-hook
+      #       optional: false
 ---
 kind: Service
 apiVersion: v1
