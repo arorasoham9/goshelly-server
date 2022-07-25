@@ -311,7 +311,7 @@ func StartServer(port string, sslEmail string, notEmail string, hookSlack string
 
 		identity := acceptUserIntroduction(conn)
 		writeCmdLen(conn)
-		servlog.Println("Handling Client: ", conn.RemoteAddr())
+		servlog.Println("Handling Client: ", conn.RemoteAddr().String())
 		go handleClient(conn, identity)
 	}
 }

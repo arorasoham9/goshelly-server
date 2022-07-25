@@ -64,10 +64,10 @@ func addUser() {
 	r.POST("/signup/", func(c *gin.Context) {
 		var user t.User
 		c.BindJSON(&user)
-		if !validateMailAddress(user.EMAIL) {
-			c.JSON(http.StatusForbidden, gin.H{"message": "Email address provided is incorrect."})
-			return
-		}
+		// if !validateMailAddress(user.EMAIL) {
+		// 	c.JSON(http.StatusForbidden, gin.H{"message": "Email address provided is incorrect."})
+		// 	return
+		// }
 		if b.FindUser(strings.TrimSpace(user.EMAIL)) {
 			c.JSON(http.StatusForbidden, gin.H{"message": "User already exists with this email. Try a different email."})
 			return
